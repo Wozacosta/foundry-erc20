@@ -25,4 +25,20 @@ contract OurTokenTest is Test {
         assertEq(ot.balanceOf(bob), STARTING_BALANCE);
     }
     
+    function testAllowances() public {
+        uint256 initialAllowance = 1000;
+        
+        // Bob approves Alice to spend token on his behalf
+        vm.prank(bob);
+        ot.approve(alice, initialAllowance);
+        
+        assertEq(ot.allowance(address(bob), address(alice)), initialAllowance);
+        uint256 transferAmount = 500;
+        vm.prank(alice);
+        ot.transferFrom(bob, alice, transferAmount);
+
+        assertEq(ot.balanceOf(bob), STARTING_BALANCE - transferAmount);
+        assertEq(ot.balanceOf(alice), transferAmount);
+    }
+    
 }
